@@ -5,7 +5,7 @@ def tokenizer(line: str,keyword) -> list:
     word = ""
     current_type = ""
     is_text = False
-    seperators = ["(",")","[","]",".",","]
+    seperators = ["(",")","[","]",".",",","{","}"]
     ending_letter = None
     
     while loc < len(line):
