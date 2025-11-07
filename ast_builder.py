@@ -18,6 +18,14 @@ class operator:
         self.operator = opr
         self.byteType = "OPR"
 
+class items:
+    def __init__(self, items: list):
+        self.items = items # <- list
+        self.byteType = "LST" # -> list
+
+    def append(self,item):
+        self.items.append(item)
+
 class keyword:
     arg = None
     name = ""
@@ -29,6 +37,11 @@ class integer:
     def __init__(self,number):
         self.number = number
         self.byteType = "int32"
+
+class float32:
+    def __init__(self,number):
+        self.number = number
+        self.byteType = "float32"
 
 class string:
     def __init__(self,text):
@@ -69,6 +82,24 @@ def nerest_end_sep(order_line,location,end):
         return start, loc
     print("the sep did not end.")
     exit(1)
+
+def closed_last_loc(order_line, start: int, letter=None, func= lambda x: x[0]) -> int:
+    end_at: int = 0
+    at_location = start
+    for _ in order_line[start:]:       
+        if func(order_line[at_location]) == letter:
+            end_at = at_location
+        at_location += 1
+    return end_at
+
+def all_letter_location(order_line, start = 0, letter=None, func= lambda x: x[0],end = -1 ) -> list[int]:
+    locations = []
+    at_location = start
+    for _ in order_line[start:end]:
+        if func(order_line[at_location]) == letter:
+            locations.append(at_location)
+        at_location += 1
+    return locations
 
 def AST_builder(ordered_line: list):
     # lowest num finder
@@ -166,10 +197,26 @@ def AST_builder(ordered_line: list):
             Node_main = BLOCK(AST_builder(ordered_line[location_target+1:location_end]))
             return Node_main
 
-
+        elif ordered_line[location_target][2] == ",":
+            Node_main = items([])
+            item_end = closed_last_loc(ordered_line,location_target,",",lambda x: x[2])
+            all_item_locations = all_letter_location(ordered_line,location_target,",",lambda x: x[2],item_end+1)
+            location = 0
+            last_loc = location
+            
+            while location < len(all_item_locations):
+                
+                Node_main.append(AST_builder(ordered_line[last_loc:all_item_locations[location]]))
+                last_loc = all_item_locations[location]+1
+                location += 1
+                
+            
     elif ordered_line[location_target][1] == "int":
-        Node_main = integer(ordered_line[location_target][2])
-    
+        Node_main = integer(int(ordered_line[location_target][2]))
+
+    elif ordered_line[location_target][1] == "float":
+        Node_main = float32(float(ordered_line[location_target][2]))
+
     elif ordered_line[location_target][1] == "str":
         Node_main = string(ordered_line[location_target][2])
     return Node_main

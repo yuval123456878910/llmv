@@ -23,7 +23,11 @@ def tokenizer(line: str,keyword) -> list:
                 is_text = not is_text
 
                 if is_text:
+                    if current_type != "str" and word != "":
+                        token_line.append([current_type,word])
+                        word = ""
                     current_type = "str"
+
                 if not is_text:
                     token_line.append([current_type,word])
                     digit = ""
@@ -45,6 +49,9 @@ def tokenizer(line: str,keyword) -> list:
 
             loc += 1
             continue
+        
+        elif current_type == "int" and digit == ".":
+            current_type = "float"
 
         elif is_text:
             current_type = "str"
@@ -60,13 +67,14 @@ def tokenizer(line: str,keyword) -> list:
             continue
 
         elif is_a_number:
-            if current_type != "int" and word != "" and current_type != "elm":
+            if current_type != "int" and word != "" and current_type != "elm" and current_type != "float":
                 token_line.append([current_type,word])
                 word = ""
                 current_type = "int"
             else:
-                if current_type != "elm": 
+                if current_type != "elm" and current_type != "float": 
                     current_type = "int"
+                
 
         elif is_a_text and digit != "":
             if current_type != "elm" and word != "":
