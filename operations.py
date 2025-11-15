@@ -7,7 +7,7 @@ import sys
 
 file = open(sys.argv[1],"r")
 output_name = sys.argv[2]
-keywords = ["int", "str", "float","func"]
+keywords = ["int", "str", "float","func","return"]
 token = tokenizer(file.read(),keywords)
 ord_line = ordered_line(token)
 AST = combiner(ord_line) # the ast

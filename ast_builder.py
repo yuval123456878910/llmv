@@ -71,6 +71,16 @@ class identifier:
         self.type = type
         self.byteType = "IDEN"
 
+class element:
+    def __init__(self,name):
+        self.name = name
+        self.byteType = "ELM"
+
+class return_object:
+    def __init__(self,obj):
+        self.rt = obj
+        self.byteType = "RETURN"
+
 def nerest_end_sep(order_line,location,end):
     # fix ptoblom
     stop = 0
@@ -209,6 +219,10 @@ def AST_builder(ordered_line: list):
             Node_main.block = combiner(ordered_line[location_target+3:len(ordered_line)])[0]
             return Node_main
         
+        if ordered_line[location_target][2] == "return":
+            Node_main = return_object(AST_builder(ordered_line[location_target+1:current_EOL+1]))
+            return Node_main
+        
         if ordered_line[location_target][2] == "int":
             Node_main = identifier(ordered_line[location_target+1][2],AST_builder(ordered_line[location_target+3:current_EOL+1]),"int32")
             return Node_main
@@ -254,6 +268,8 @@ def AST_builder(ordered_line: list):
 
     elif ordered_line[location_target][1] == "str":
         Node_main = string(ordered_line[location_target][2])
+    elif ordered_line[location_target][1] == "elm":
+        Node_main = element(ordered_line[location_target][2])
     return Node_main
 
 def combiner(order_line: list):

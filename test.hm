@@ -1,3 +1,4 @@
 func main int() {
-    int e = 5+1;
+    int Cal2 = 10/2;
+    return Cal2;
 };
