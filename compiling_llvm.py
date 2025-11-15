@@ -6,7 +6,12 @@ def compiling_to_IR(ASTs, block= ir.Block, Module = ir.Module, building = ir.IRB
     global verubles, total_veubles_complitions
     for key in ASTs:
         if key.byteType == "FUNC":
-            ll_term = ir.FunctionType(ir.IntType(32),[])
+            type_ret = ""
+            if key.type == "int":
+                type_ret = ir.IntType(32)
+            elif key.type == "float":
+                type_ret = ir.DoubleType()
+            ll_term = ir.FunctionType(type_ret,[])
             func = ir.Function(Module, ll_term, key.name)
             entry_block = func.append_basic_block("entry")
             builder = ir.IRBuilder(entry_block)
@@ -78,6 +83,11 @@ def compiling_to_IR(ASTs, block= ir.Block, Module = ir.Module, building = ir.IRB
                 ptr = building.alloca(typ=ir.IntType(32),name=key.name)
                 verubles[key.name] = ptr
                 building.store(eqr,ptr=ptr)
+
+            if key.type == "float32":   
+                ptr = building.alloca(typ=ir.DoubleType(),name=key.name)
+                verubles[key.name] = ptr
+                building.store(eqr,ptr=ptr)
             
         elif key.byteType == "int32":
             verubles[f"{total_veubles_complitions}Cal"] = ir.IntType(32)(key.number)
@@ -85,9 +95,8 @@ def compiling_to_IR(ASTs, block= ir.Block, Module = ir.Module, building = ir.IRB
             total_veubles_complitions += 1
             return verubles[old]
         
-        
         elif key.byteType == "float32":
-            verubles[f"{total_veubles_complitions}Cal"] = ir.FloatType()(key.number)
+            verubles[f"{total_veubles_complitions}Cal"] = ir.DoubleType()(key.number)
             old = f"{total_veubles_complitions}Cal"
             total_veubles_complitions += 1
             return verubles[old]

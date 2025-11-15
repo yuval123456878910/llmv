@@ -4,7 +4,7 @@ this is a programming launguge compiler using llvmliet
 you need to install python first
 then you run
  <br>
-python operations.py file-name output_file_name
+python operations.py file-name output_file_name.ll exe_output
 
 
 

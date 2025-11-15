@@ -188,12 +188,13 @@ def AST_builder(ordered_line: list):
             elif ordered_line[location_target-2][2] not in ["str","int","float"]:
                 print("Keyword not exact")
                 exit(1)
+            print("w")
             type_asset = ""
             if ordered_line[location_target-2][2] == "str":
                 type_asset = "str"
             elif ordered_line[location_target-2][2] == "int":
                 type_asset = "int32"
-            elif ordered_line[location_target-2][2] == "int":
+            elif ordered_line[location_target-2][2] == "float":
                 type_asset = "float32"
             Node_main = identifier(ordered_line[location_target-1][2], AST_builder(ordered_line[location_target+1:current_EOL+1]),type_asset)
 
@@ -225,6 +226,10 @@ def AST_builder(ordered_line: list):
         
         if ordered_line[location_target][2] == "int":
             Node_main = identifier(ordered_line[location_target+1][2],AST_builder(ordered_line[location_target+3:current_EOL+1]),"int32")
+            return Node_main
+        
+        if ordered_line[location_target][2] == "float":
+            Node_main = identifier(ordered_line[location_target+1][2],AST_builder(ordered_line[location_target+3:current_EOL+1]),"float32")
             return Node_main
         
     elif ordered_line[location_target][1] == "sep":
